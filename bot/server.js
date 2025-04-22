@@ -2,7 +2,7 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const moviesRoute = require('routes/movies');
+const moviesRoute = require('bot/routes/movies');
 require('dotenv').config();
 
 const app = express();
