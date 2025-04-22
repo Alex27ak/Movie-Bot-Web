@@ -1,45 +1,39 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const movieForm = document.getElementById("movieForm");
-  const movieList = document.getElementById("movieList");
+const movieList = document.getElementById('movieList');
+const searchInput = document.getElementById('searchInput');
 
-  const API_URL = "/api/movies";
+async function fetchMovies() {
+  try {
+    const res = await fetch('/api/movies');
+    const data = await res.json();
+    return data.movies || [];
+  } catch (err) {
+    console.error('Failed to fetch movies:', err);
+    return [];
+  }
+}
 
-  const fetchMovies = async () => {
-    try {
-      const res = await fetch(API_URL);
-      const movies = await res.json();
+function renderMovies(movies) {
+  movieList.innerHTML = '';
+  if (movies.length === 0) {
+    movieList.innerHTML = '<p>No movies found.</p>';
+    return;
+  }
 
-      movieList.innerHTML = "";
-      movies.forEach((movie) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<strong>${movie.title}</strong><br><a href="${movie.link}" target="_blank">${movie.link}</a>`;
-        movieList.appendChild(li);
-      });
-    } catch (err) {
-      console.error("Error fetching movies", err);
-    }
-  };
-
-  movieForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const title = document.getElementById("title").value.trim();
-    const link = document.getElementById("link").value.trim();
-
-    if (!title || !link) return;
-
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, link }),
-      });
-
-      movieForm.reset();
-      fetchMovies();
-    } catch (err) {
-      console.error("Error adding movie", err);
-    }
+  movies.forEach(movie => {
+    const div = document.createElement('div');
+    div.className = 'movie-item';
+    div.textContent = movie.title;
+    movieList.appendChild(div);
   });
+}
 
-  fetchMovies();
-});
+async function handleSearch() {
+  const query = searchInput.value.toLowerCase();
+  const movies = await fetchMovies();
+  const filtered = movies.filter(movie => movie.title.toLowerCase().includes(query));
+  renderMovies(filtered);
+}
+
+// Initial load
+fetchMovies().then(renderMovies);
+searchInput.addEventListener('input', handleSearch);
