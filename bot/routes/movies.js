@@ -1,7 +1,7 @@
 // bot/routes/movies.js
 
 const express = require('express');
-const Movie = require('../models/Movie'); // Adjusted to match the correct path
+const Movie = require('../models/Movie.js'); // Adjusted to match the correct path
 const router = express.Router();
 
 // Route to get all movies
