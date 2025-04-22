@@ -1,17 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Movie Bot Web</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Telegram Sync</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Movie Bot Web</h1>
-    <input type="text" id="searchInput" placeholder="Search for a movie..." />
+    <h1>Movies List</h1>
+    <input type="text" id="searchInput" placeholder="Search movies by title..." onkeyup="searchMovies()">
     <div id="movieList"></div>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    async function fetchMovies() {
+      const response = await fetch('/api/movies');
+      const movies = await response.json();
+      displayMovies(movies);
+    }
+
+    function displayMovies(movies) {
+      const movieList = document.getElementById('movieList');
+      movieList.innerHTML = ''; // Clear the list before adding
+      movies.forEach(movie => {
+        const movieDiv = document.createElement('div');
+        movieDiv.classList.add('movie');
+        movieDiv.innerHTML = `
+          <h3 onclick="viewMovieDetails('${movie._id}')">${movie.title} (${movie.year})</h3>
+          <p>Language: ${movie.language}</p>
+        `;
+        movieList.appendChild(movieDiv);
+      });
+    }
+
+    async function searchMovies() {
+      const query = document.getElementById('searchInput').value;
+      const response = await fetch(`/api/movies/search?query=${query}`);
+      const movies = await response.json();
+      displayMovies(movies);
+    }
+
+    async function viewMovieDetails(id) {
+      const response = await fetch(`/api/movies/${id}`);
+      const movie = await response.json();
+      window.location.href = `/movie/${id}`;
+    }
+
+    // Load movies on page load
+    window.onload = fetchMovies;
+  </script>
 </body>
 </html>
