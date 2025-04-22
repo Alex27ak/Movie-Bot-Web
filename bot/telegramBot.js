@@ -29,11 +29,15 @@ bot.on(['text', 'photo'], async (ctx) => {
 
     // Notify all admins
     for (const adminId of adminIds) {
-      await bot.telegram.sendMessage(
-        adminId,
-        `🎬 *Movie Saved!*\n\n*Title:* ${data.title}\n*Language:* ${data.language || 'N/A'}`,
-        { parse_mode: 'Markdown' }
-      );
+      try {
+        await bot.telegram.sendMessage(
+          adminId,
+          `🎬 *Movie Saved!*\n\n*Title:* ${data.title}\n*Language:* ${data.language || 'N/A'}`,
+          { parse_mode: 'Markdown' }
+        );
+      } catch (adminErr) {
+        console.error(`Error sending message to admin ${adminId}:`, adminErr);
+      }
     }
   } catch (err) {
     console.error('Error parsing/saving:', err);
@@ -42,4 +46,4 @@ bot.on(['text', 'photo'], async (ctx) => {
 });
 
 // Launch bot
-bot.launch().then(() => console.log('Bot is running'));
+bot.launch().then(() => console.log('Bot is running')).catch(err => console.error('Error launching bot:', err));
