@@ -2,24 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Movie Bot Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Bot Web</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Movie Bot Sync</h1>
-
-    <form id="movieForm">
-      <input type="text" id="title" placeholder="Movie Title" required />
-      <input type="text" id="link" placeholder="Download Link" required />
-      <button type="submit">Add Movie</button>
-    </form>
-
-    <h2>Movies List</h2>
-    <ul id="movieList"></ul>
+    <h1>Movie Bot Web</h1>
+    <input type="text" id="searchInput" placeholder="Search for a movie..." />
+    <div id="movieList"></div>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
