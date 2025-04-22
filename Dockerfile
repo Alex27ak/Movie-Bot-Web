@@ -1,7 +1,10 @@
 # Use the official Node.js image as a base image
 FROM node:16
 
-# Copy package.json and package-lock.json first to leverage Docker caching
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the package.json and package-lock.json first for better layer caching
 COPY package*.json ./
 
 # Install dependencies
@@ -16,5 +19,5 @@ EXPOSE 3000
 # Set environment variables (you can override them later)
 ENV NODE_ENV=production
 
-# Start the app
+# Start the app (adjust the entrypoint if needed)
 CMD ["node", "bot/server.js"]
