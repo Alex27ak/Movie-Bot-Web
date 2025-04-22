@@ -1,27 +1,32 @@
-// routes/movies.js
+// bot/routes/movies.js
 
 const express = require('express');
+const Movie = require('../models/Movie'); // Adjusted to match the correct path
 const router = express.Router();
-const Movie = require('../models/Movie');
 
-// Fetch all movies with basic fields (title, year, language)
+// Route to get all movies
 router.get('/', async (req, res) => {
-  const movies = await Movie.find({}, 'title year language').sort({ updatedAt: -1 });
-  res.json(movies);
+  try {
+    const movies = await Movie.find(); // Fetch all movies from MongoDB
+    res.json(movies);
+  } catch (err) {
+    console.error('Error fetching movies:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-// Fetch movie by ID to show detailed information
-router.get('/:id', async (req, res) => {
-  const movie = await Movie.findById(req.params.id);
-  res.json(movie);
-});
-
-// Search for movies by title (case-insensitive)
-router.get('/search', async (req, res) => {
-  const query = req.query.query;
-  const regex = new RegExp(query, 'i');
-  const movies = await Movie.find({ title: { $regex: regex } }, 'title year language').sort({ updatedAt: -1 });
-  res.json(movies);
+// Route to get a specific movie by title
+router.get('/:title', async (req, res) => {
+  try {
+    const movie = await Movie.findOne({ title: req.params.title }); // Find a movie by title
+    if (!movie) {
+      return res.status(404).send('Movie not found');
+    }
+    res.json(movie);
+  } catch (err) {
+    console.error('Error fetching movie:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 module.exports = router;
