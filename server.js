@@ -6,13 +6,21 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Middleware
 app.use(express.json());
+
+// Serve frontend files from the "public" directory
+app.use(express.static('public'));
+
+// API routes
 app.use('/api/movies', moviesRoute);
 
+// Root route
 app.get('/', (req, res) => {
   res.send('Movie Telegram Sync Server Running!');
 });
 
+// Connect to MongoDB and start server
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
